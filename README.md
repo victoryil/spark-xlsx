@@ -66,19 +66,19 @@ If you're interested in contributing to the project, check out our [Contribution
 
 ## Deploying to Maven Central
 
-This project is configured for deployment to Maven Central via Sonatype OSSRH. To deploy a new version:
+This project is configured for deployment to Maven Central via Central Sonatype. To deploy a new version:
 
 ### Prerequisites
 
-1. Create a [Sonatype JIRA account](https://issues.sonatype.org/secure/Signup!default.jspa)
-2. Create a new project ticket in JIRA to request access to the `dev.victoryil` group ID
+1. Create a [Sonatype account](https://central.sonatype.org/)
+2. Request access to the `dev.victoryil` group ID in Central Sonatype
 3. Set up GPG signing keys on your machine
-4. Configure your Maven settings.xml with Sonatype credentials
+4. Configure your Maven settings.xml with Sonatype token
 
 ### Configuration
 
 1. Copy the template settings file from `.mvn/settings.xml` to `~/.m2/settings.xml` (or merge with your existing settings)
-2. Update the file with your Sonatype username and password
+2. Update the file with your Sonatype token
 3. Configure your GPG key information if needed
 
 ### Deployment Process
@@ -100,7 +100,7 @@ This will:
 2. Run tests
 3. Generate Javadocs and source JARs
 4. Sign all artifacts with GPG
-5. Deploy to Sonatype OSSRH
+5. Deploy to Central Sonatype
 6. Automatically release to Maven Central (if using the release profile)
 
 ## License

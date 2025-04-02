@@ -1,13 +1,13 @@
 # Releasing to Maven Central
 
-This document provides detailed instructions for project maintainers on how to release new versions of the Spark XLSX library to Maven Central via Sonatype OSSRH.
+This document provides detailed instructions for project maintainers on how to release new versions of the Spark XLSX library to Maven Central via Central Sonatype.
 
 ## Prerequisites
 
 Before you can release to Maven Central, you need:
 
-1. A Sonatype JIRA account (create one at https://issues.sonatype.org/secure/Signup!default.jspa)
-2. Access to the `dev.victoryil` group ID in Sonatype OSSRH
+1. A Sonatype account (create one at https://central.sonatype.org/)
+2. Access to the `dev.victoryil` group ID in Central Sonatype
 3. GPG keys for signing the artifacts
 4. Maven installed on your system
 
@@ -36,15 +36,14 @@ Create or update your `~/.m2/settings.xml` file with your Sonatype credentials:
 <settings>
   <servers>
     <server>
-      <id>ossrh</id>
-      <username>your-sonatype-username</username>
-      <password>your-sonatype-password</password>
+      <id>central</id>
+      <token>your-sonatype-token</token>
     </server>
   </servers>
 
   <profiles>
     <profile>
-      <id>ossrh</id>
+      <id>central</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -73,8 +72,7 @@ Before using the GitHub Actions workflow, you need to set up the following secre
 1. Go to your GitHub repository
 2. Navigate to "Settings" > "Secrets and variables" > "Actions"
 3. Add the following secrets:
-   - `OSSRH_USERNAME`: Your Sonatype OSSRH username
-   - `OSSRH_PASSWORD`: Your Sonatype OSSRH password
+   - `SONATYPE_TOKEN`: Your Central Sonatype token
    - `GPG_PRIVATE_KEY`: Your GPG private key (export it with `gpg --export-secret-keys --armor YOUR_KEY_ID`)
    - `GPG_PASSPHRASE`: The passphrase for your GPG key
 
@@ -98,7 +96,7 @@ The workflow will:
 ### 3. Monitor the Release
 
 1. Check the workflow progress in the Actions tab
-2. Verify the release in Sonatype OSSRH at https://s01.oss.sonatype.org/
+2. Verify the release in Central Sonatype at https://central.sonatype.org/
 3. The artifacts should appear in Maven Central within a few hours
 
 ## Option 2: Manual Release
@@ -132,12 +130,12 @@ This command will:
 2. Run tests
 3. Generate Javadocs and source JARs
 4. Sign all artifacts with GPG
-5. Deploy to Sonatype OSSRH
+5. Deploy to Central Sonatype
 6. Automatically release to Maven Central (due to `autoReleaseAfterClose=true` in the nexus-staging-maven-plugin configuration)
 
 ### 4. Verify the Release
 
-1. Check the Sonatype repository manager at https://s01.oss.sonatype.org/
+1. Check the Sonatype repository manager at https://central.sonatype.org/
 2. Verify that your artifacts have been properly released
 3. The artifacts should appear in Maven Central within a few hours
 
@@ -168,14 +166,14 @@ echo "test" | gpg --clearsign
 
 If there are issues with the Nexus staging process:
 
-1. Log in to https://s01.oss.sonatype.org/
+1. Log in to https://central.sonatype.org/
 2. Go to "Staging Repositories"
 3. Find your repository and check for any rule violations
 4. If needed, you can manually drop or release the repository
 
 ## References
 
-- [Sonatype OSSRH Guide](https://central.sonatype.org/publish/publish-guide/)
+- [Central Sonatype Guide](https://central.sonatype.org/publish/publish-guide/)
 - [GPG Setup Guide](https://central.sonatype.org/publish/requirements/gpg/)
 - [Maven Deployment Guide](https://maven.apache.org/plugins/maven-deploy-plugin/usage.html)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)

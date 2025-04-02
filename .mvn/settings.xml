@@ -8,9 +8,7 @@
 
   <servers>
     <server>
-      <!-- This server ID must match the ID in the distributionManagement section of pom.xml -->
-      <id>ossrh</id>
-      <!-- Uses environment variables set by GitHub Actions -->
+      <id>central</id>
       <username>${env.MAVEN_USERNAME}</username>
       <password>${env.MAVEN_PASSWORD}</password>
     </server>
