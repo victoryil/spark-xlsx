@@ -1,0 +1,77 @@
+name: Maven Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: 'Release version'
+        required: true
+      developmentVersion:
+        description: 'Next development version (with -SNAPSHOT suffix)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Update to release version
+        run: mvn versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }}
+
+      - name: Build and deploy to Maven Central
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean deploy -P release -DskipTests
+
+      - name: Create Git tag
+        run: |
+          git add pom.xml
+          git commit -m "Release version ${{ github.event.inputs.releaseVersion }}"
+          git tag -a v${{ github.event.inputs.releaseVersion }} -m "Release version ${{ github.event.inputs.releaseVersion }}"
+
+      - name: Update to next development version
+        run: mvn versions:set -DnewVersion=${{ github.event.inputs.developmentVersion }}
+
+      - name: Commit next development version
+        run: |
+          git add pom.xml
+          git commit -m "Prepare for next development iteration ${{ github.event.inputs.developmentVersion }}"
+
+      - name: Push changes and tags
+        run: |
+          git push origin main
+          git push origin v${{ github.event.inputs.releaseVersion }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.releaseVersion }}
+          name: Release ${{ github.event.inputs.releaseVersion }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

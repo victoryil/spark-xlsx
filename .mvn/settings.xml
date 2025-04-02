@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!-- This is a template settings.xml file for deploying to Maven Central via Sonatype OSS -->
+  <!-- Copy this file to ~/.m2/settings.xml or merge with your existing settings.xml -->
+
+  <servers>
+    <server>
+      <!-- This server ID must match the ID in the distributionManagement section of pom.xml -->
+      <id>ossrh</id>
+      <!-- Uses environment variables set by GitHub Actions -->
+      <username>${env.MAVEN_USERNAME}</username>
+      <password>${env.MAVEN_PASSWORD}</password>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <id>ossrh</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <!-- GPG configuration for GitHub Actions -->
+        <!-- The GPG private key is configured in the GitHub Actions workflow -->
+        <gpg.passphrase>${env.MAVEN_GPG_PASSPHRASE}</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
+</settings>

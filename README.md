@@ -23,7 +23,7 @@ Add the following dependency to your project:
 <dependency>
     <groupId>dev.victoryil</groupId>
     <artifactId>spark-xlsx</artifactId>
-    <version>1.0.0</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
@@ -63,6 +63,45 @@ Dataset<Row> df = spark.read()
 For more detailed information on usage and configuration options, please see the [Usage Documentation](USAGE.md).
 
 If you're interested in contributing to the project, check out our [Contribution Guidelines](CONTRIBUTING.md).
+
+## Deploying to Maven Central
+
+This project is configured for deployment to Maven Central via Sonatype OSSRH. To deploy a new version:
+
+### Prerequisites
+
+1. Create a [Sonatype JIRA account](https://issues.sonatype.org/secure/Signup!default.jspa)
+2. Create a new project ticket in JIRA to request access to the `dev.victoryil` group ID
+3. Set up GPG signing keys on your machine
+4. Configure your Maven settings.xml with Sonatype credentials
+
+### Configuration
+
+1. Copy the template settings file from `.mvn/settings.xml` to `~/.m2/settings.xml` (or merge with your existing settings)
+2. Update the file with your Sonatype username and password
+3. Configure your GPG key information if needed
+
+### Deployment Process
+
+To deploy a snapshot version:
+
+```bash
+mvn clean deploy
+```
+
+To deploy a release version:
+
+```bash
+mvn clean deploy -P release
+```
+
+This will:
+1. Compile the code
+2. Run tests
+3. Generate Javadocs and source JARs
+4. Sign all artifacts with GPG
+5. Deploy to Sonatype OSSRH
+6. Automatically release to Maven Central (if using the release profile)
 
 ## License
 
