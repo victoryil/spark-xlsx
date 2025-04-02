@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -146,6 +147,23 @@ public class XLSXReader implements PartitionReader<InternalRow> {
 
     @Override
     public void close() {
-        // You can release resources here if needed
+        logger.debug("Closing XLSX reader and releasing resources");
+        try {
+            if (evaluator != null) {
+                // Clear any cached formula results
+                evaluator.clearAllCachedResultValues();
+            }
+
+            // Close the workbook which will also close the sheet
+            if (rowIterator != null && rowIterator.hasNext()) {
+                // Get the sheet from the current row to close it properly
+                Row row = rowIterator.next();
+                if (row != null && row.getSheet() != null) {
+                    row.getSheet().getWorkbook().close();
+                }
+            }
+        } catch (IOException e) {
+            logger.warn("Error closing workbook resources", e);
+        }
     }
 }
