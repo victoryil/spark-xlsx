@@ -91,7 +91,8 @@ The workflow will:
 2. Build and deploy to Maven Central
 3. Create a Git tag and GitHub release
 4. Update the version to the next development version
-5. Push all changes back to the repository
+5. Push the release version to the main branch
+6. Push the development version (snapshot) to the develop branch (creating the branch if it doesn't exist)
 
 ### 3. Monitor the Release
 

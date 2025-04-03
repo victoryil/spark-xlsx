@@ -61,10 +61,38 @@ jobs:
           git add pom.xml
           git commit -m "Prepare for next development iteration ${{ github.event.inputs.developmentVersion }}"
 
-      - name: Push changes and tags
+      - name: Push release version to main and tags
         run: |
+          # Push the release version commit and tag to main
           git push origin main
           git push origin v${{ github.event.inputs.releaseVersion }}
+
+      - name: Push development version to develop branch
+        run: |
+          # Save the development version commit hash and content
+          DEV_COMMIT=$(git rev-parse HEAD)
+          git show $DEV_COMMIT:pom.xml > /tmp/dev-pom.xml
+
+          # Check if develop branch exists, create it if it doesn't
+          if ! git ls-remote --heads origin develop | grep develop; then
+            # Create develop branch from the current state (after committing development version)
+            git checkout -b develop
+          else
+            # If develop branch exists, fetch it and checkout
+            git fetch origin develop
+            git checkout develop
+
+            # Apply the development version changes
+            cp /tmp/dev-pom.xml pom.xml
+            git add pom.xml
+            git commit -m "Prepare for next development iteration ${{ github.event.inputs.developmentVersion }}"
+          fi
+
+          # Push the development version to develop branch
+          git push origin develop
+
+          # Return to main branch for the rest of the workflow
+          git checkout main
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
