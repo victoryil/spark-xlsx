@@ -1,13 +1,12 @@
 package dev.victoryil.spark;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.connector.catalog.SupportsRead;
 import org.apache.spark.sql.connector.catalog.Table;
 import org.apache.spark.sql.connector.catalog.TableCapability;
 import org.apache.spark.sql.connector.read.ScanBuilder;
 import org.apache.spark.sql.types.StructType;
 import org.apache.spark.sql.util.CaseInsensitiveStringMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Set;
@@ -16,8 +15,8 @@ import java.util.Set;
  * XLSX table implementation for Apache Spark.
  * This class represents a table backed by an XLSX file.
  */
+@Slf4j
 public class XLSXTable implements Table, SupportsRead {
-    private static final Logger logger = LoggerFactory.getLogger(XLSXTable.class);
     private final StructType schema;
 
     /**
@@ -26,13 +25,13 @@ public class XLSXTable implements Table, SupportsRead {
      * @param schema The schema of the table
      */
     public XLSXTable(StructType schema) {
-        logger.debug("Creating XLSX table with schema: {}", schema);
+        log.debug("Creating XLSX table with schema: {}", schema);
         this.schema = schema;
     }
 
     @Override
     public ScanBuilder newScanBuilder(CaseInsensitiveStringMap options) {
-        logger.debug("Creating scan builder with options: {}", options);
+        log.debug("Creating scan builder with options: {}", options);
         return new XLSXScanBuilder(schema, options);
     }
 
@@ -48,7 +47,7 @@ public class XLSXTable implements Table, SupportsRead {
 
     @Override
     public Set<TableCapability> capabilities() {
-        logger.debug("Reporting table capabilities: BATCH_READ");
+        log.debug("Reporting table capabilities: BATCH_READ");
         return Collections.singleton(TableCapability.BATCH_READ);
     }
 }

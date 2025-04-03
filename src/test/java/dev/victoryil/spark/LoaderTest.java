@@ -1,5 +1,6 @@
 package dev.victoryil.spark;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -7,8 +8,6 @@ import org.apache.spark.sql.types.StructType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for the XLSX data source.
  */
+@Slf4j
 public class LoaderTest {
-    private static final Logger logger = LoggerFactory.getLogger(LoaderTest.class);
     private static SparkSession spark;
 
     @BeforeAll
     public static void init() {
-        logger.info("Initializing Spark session for tests");
+        log.info("Initializing Spark session for tests");
         spark = SparkSession.builder()
                 .master("local[*]")
                 .appName("XLSX Reader Test")
@@ -33,14 +32,14 @@ public class LoaderTest {
     @AfterAll
     public static void cleanup() {
         if (spark != null) {
-            logger.info("Stopping Spark session");
+            log.info("Stopping Spark session");
             spark.stop();
         }
     }
 
     @Test
     public void testBasicLoad() {
-        logger.info("Testing basic XLSX file loading");
+        log.info("Testing basic XLSX file loading");
 
         // Define the schema for the test
         StructType schema = StructType.fromDDL("id string, name string");
@@ -55,12 +54,12 @@ public class LoaderTest {
         assertNotNull(df, "DataFrame should not be null");
 
         // Show the data for debugging
-        logger.info("Loaded data:");
+        log.info("Loaded data:");
         df.show();
 
         // Verify row count
         long rowCount = df.count();
-        logger.info("Row count: {}", rowCount);
+        log.info("Row count: {}", rowCount);
         assertTrue(rowCount > 0, "Should have at least one row");
 
         // Verify column count
@@ -73,7 +72,7 @@ public class LoaderTest {
 
     @Test
     public void testLoadWithOptions() {
-        logger.info("Testing XLSX file loading with options");
+        log.info("Testing XLSX file loading with options");
 
         // Define the schema for the test
         StructType schema = StructType.fromDDL("id string, name string");
@@ -89,12 +88,12 @@ public class LoaderTest {
         assertNotNull(df, "DataFrame should not be null");
 
         // Show the data for debugging
-        logger.info("Loaded data with options:");
+        log.info("Loaded data with options:");
         df.show();
 
         // Verify row count
         long rowCount = df.count();
-        logger.info("Row count: {}", rowCount);
+        log.info("Row count: {}", rowCount);
         assertTrue(rowCount > 0, "Should have at least one row");
     }
 }

@@ -1,5 +1,6 @@
 package dev.victoryil.spark;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.spark.sql.catalyst.InternalRow;
@@ -10,8 +11,6 @@ import org.apache.spark.sql.types.DecimalType;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.apache.spark.unsafe.types.UTF8String;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +22,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+@Slf4j
 public class XLSXReader implements PartitionReader<InternalRow> {
-    private static final Logger logger = LoggerFactory.getLogger(XLSXReader.class);
 
     private final StructType schema;
     private final Iterator<Row> rowIterator;
@@ -39,7 +38,7 @@ public class XLSXReader implements PartitionReader<InternalRow> {
                 .toArray(DataType[]::new);
         try {
             String path = options.get("path");
-            logger.info("Reading Excel file from path: {}", path);
+            log.info("Reading Excel file from path: {}", path);
 
             FileInputStream fis = new FileInputStream(new File(path));
             Workbook workbook = new XSSFWorkbook(fis);
@@ -50,7 +49,7 @@ public class XLSXReader implements PartitionReader<InternalRow> {
             if (rowIterator.hasNext()) rowIterator.next(); // Skip header
 
         } catch (Exception e) {
-            logger.error("Failed to initialize ExcelReader", e);
+            log.error("Failed to initialize ExcelReader", e);
             throw new RuntimeException("Error reading Excel file: " + e.getMessage(), e);
         }
     }
@@ -101,11 +100,11 @@ public class XLSXReader implements PartitionReader<InternalRow> {
                 case "timestamp":
                     return getTimestampValue(cell);
                 default:
-                    logger.warn("Unsupported type '{}', returning string fallback", type.simpleString());
+                    log.warn("Unsupported type '{}', returning string fallback", type.simpleString());
                     return UTF8String.fromString(cell.toString());
             }
         } catch (Exception e) {
-            logger.error("Error converting cell '{}' to type '{}'", cell.toString(), type.simpleString(), e);
+            log.error("Error converting cell '{}' to type '{}'", cell.toString(), type.simpleString(), e);
             throw new RuntimeException("Conversion error", e);
         }
     }
@@ -147,7 +146,7 @@ public class XLSXReader implements PartitionReader<InternalRow> {
 
     @Override
     public void close() {
-        logger.debug("Closing XLSX reader and releasing resources");
+        log.debug("Closing XLSX reader and releasing resources");
         try {
             if (evaluator != null) {
                 // Clear any cached formula results
@@ -163,7 +162,7 @@ public class XLSXReader implements PartitionReader<InternalRow> {
                 }
             }
         } catch (IOException e) {
-            logger.warn("Error closing workbook resources", e);
+            log.warn("Error closing workbook resources", e);
         }
     }
 }
