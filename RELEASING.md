@@ -63,7 +63,58 @@ A template for this file is available in `.mvn/settings.xml`.
 
 You can release to Maven Central either manually or using GitHub Actions.
 
-## Option 1: Automated Release with GitHub Actions
+## Option 1: Automated Release with Local Script
+
+The repository includes a Bash script that automates the entire release process locally.
+
+### 1. Prerequisites
+
+Before using the script, ensure you have:
+
+1. GPG keys set up on your machine
+2. Maven installed
+3. Git configured
+4. Access to the `dev.victoryil` group ID in Central Sonatype
+
+### 2. Run the Release Script
+
+```bash
+./release.sh -r RELEASE_VERSION -d DEVELOPMENT_VERSION -u MAVEN_USERNAME -p MAVEN_PASSWORD \
+  -k "$(cat your_gpg_key.asc)" -i GPG_KEY_ID -s GPG_PASSPHRASE [-g GITHUB_TOKEN]
+```
+
+Arguments:
+- `-r RELEASE_VERSION`: The version to release (e.g., 0.1.0)
+- `-d DEVELOPMENT_VERSION`: The next development version with -SNAPSHOT suffix (e.g., 0.2.0-SNAPSHOT)
+- `-u MAVEN_USERNAME`: Maven Central (Sonatype) username
+- `-p MAVEN_PASSWORD`: Maven Central (Sonatype) password
+- `-k GPG_PRIVATE_KEY`: GPG private key (exported with `gpg --export-secret-keys --armor KEY_ID`)
+- `-i GPG_KEY_ID`: GPG key ID
+- `-s GPG_PASSPHRASE`: GPG passphrase
+- `-g GITHUB_TOKEN`: (Optional) GitHub token for creating GitHub releases
+
+Example:
+```bash
+./release.sh -r 0.1.0 -d 0.2.0-SNAPSHOT -u myusername -p mypassword \
+  -k "$(cat ~/.gnupg/private_key.asc)" -i A1B2C3D4 -s mypassphrase
+```
+
+The script will:
+1. Update the version to the release version
+2. Build and deploy to Maven Central
+3. Create a Git tag for the release
+4. Update to the next development version
+5. Push changes to main branch and tags
+6. Handle the develop branch
+7. Create a GitHub release (if GitHub token is provided)
+
+### 3. Monitor the Release
+
+1. The script provides detailed output of each step
+2. Verify the release in Central Sonatype at https://central.sonatype.org/
+3. The artifacts should appear in Maven Central within a few hours
+
+## Option 2: Automated Release with GitHub Actions
 
 ### 1. Set Up GitHub Secrets
 

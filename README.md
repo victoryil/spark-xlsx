@@ -83,6 +83,36 @@ This project is configured for deployment to Maven Central via Central Sonatype.
 
 ### Deployment Process
 
+#### Option 1: Using the Automated Release Script
+
+The project includes a Bash script that automates the entire release process:
+
+```bash
+./release.sh -r RELEASE_VERSION -d DEVELOPMENT_VERSION -u MAVEN_USERNAME -p MAVEN_PASSWORD \
+  -k "$(cat your_gpg_key.asc)" -i GPG_KEY_ID -s GPG_PASSPHRASE [-g GITHUB_TOKEN]
+```
+
+Arguments:
+- `-r RELEASE_VERSION`: The version to release (e.g., 0.1.0)
+- `-d DEVELOPMENT_VERSION`: The next development version with -SNAPSHOT suffix (e.g., 0.2.0-SNAPSHOT)
+- `-u MAVEN_USERNAME`: Maven Central (Sonatype) username
+- `-p MAVEN_PASSWORD`: Maven Central (Sonatype) password
+- `-k GPG_PRIVATE_KEY`: GPG private key (exported with `gpg --export-secret-keys --armor KEY_ID`)
+- `-i GPG_KEY_ID`: GPG key ID
+- `-s GPG_PASSPHRASE`: GPG passphrase
+- `-g GITHUB_TOKEN`: (Optional) GitHub token for creating GitHub releases
+
+This script will:
+1. Update the version to the release version
+2. Build and deploy to Maven Central
+3. Create a Git tag for the release
+4. Update to the next development version
+5. Push changes to main branch and tags
+6. Handle the develop branch
+7. Create a GitHub release (if GitHub token is provided)
+
+#### Option 2: Manual Deployment
+
 To deploy a snapshot version:
 
 ```bash
