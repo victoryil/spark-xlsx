@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LoaderTest {
     private static SparkSession spark;
 
+    /**
+     * Initializes the Spark session before all tests.
+     */
     @BeforeAll
     public static void init() {
         log.info("Initializing Spark session for tests");
@@ -29,6 +32,9 @@ public class LoaderTest {
                 .getOrCreate();
     }
 
+    /**
+     * Cleans up resources after all tests.
+     */
     @AfterAll
     public static void cleanup() {
         if (spark != null) {
@@ -37,6 +43,10 @@ public class LoaderTest {
         }
     }
 
+    /**
+     * Tests basic loading of an XLSX file.
+     * This test verifies that the XLSX file can be loaded and that the data is correctly read.
+     */
     @Test
     public void testBasicLoad() {
         log.info("Testing basic XLSX file loading");
@@ -70,6 +80,10 @@ public class LoaderTest {
         assertEquals("name", df.columns()[1], "Second column should be 'name'");
     }
 
+    /**
+     * Tests loading an XLSX file with options.
+     * This test verifies that the XLSX file can be loaded using the path option.
+     */
     @Test
     public void testLoadWithOptions() {
         log.info("Testing XLSX file loading with options");

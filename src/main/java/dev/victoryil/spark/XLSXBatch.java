@@ -28,6 +28,12 @@ public class XLSXBatch implements Batch {
         this.options = options;
     }
 
+    /**
+     * Plans the input partitions for reading the XLSX file.
+     * Currently creates a single partition that reads the entire file.
+     *
+     * @return An array of input partitions
+     */
     @Override
     public InputPartition[] planInputPartitions() {
         // For now: a single partition that reads the entire file
@@ -37,6 +43,11 @@ public class XLSXBatch implements Batch {
         };
     }
 
+    /**
+     * Creates a factory for partition readers.
+     *
+     * @return A new partition reader factory
+     */
     @Override
     public PartitionReaderFactory createReaderFactory() {
         log.debug("Creating partition reader factory");

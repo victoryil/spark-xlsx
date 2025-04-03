@@ -35,6 +35,12 @@ public class XLSXPartitionReaderFactory implements PartitionReaderFactory {
         }
     }
 
+    /**
+     * Creates a reader for the specified partition.
+     *
+     * @param partition The partition to create a reader for
+     * @return A new partition reader
+     */
     @Override
     public PartitionReader<InternalRow> createReader(InputPartition partition) {
         // Pass the options to our reader

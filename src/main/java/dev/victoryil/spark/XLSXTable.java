@@ -29,22 +29,44 @@ public class XLSXTable implements Table, SupportsRead {
         this.schema = schema;
     }
 
+    /**
+     * Creates a new scan builder for this table.
+     *
+     * @param options Options for reading the XLSX file
+     * @return A new scan builder
+     */
     @Override
     public ScanBuilder newScanBuilder(CaseInsensitiveStringMap options) {
         log.debug("Creating scan builder with options: {}", options);
         return new XLSXScanBuilder(schema, options);
     }
 
+    /**
+     * Gets the name of this table.
+     *
+     * @return The table name
+     */
     @Override
     public String name() {
         return "xlsx_table";
     }
 
+    /**
+     * Gets the schema of this table.
+     *
+     * @return The table schema
+     */
     @Override
     public StructType schema() {
         return schema;
     }
 
+    /**
+     * Gets the capabilities of this table.
+     * Currently only supports batch reading.
+     *
+     * @return The set of table capabilities
+     */
     @Override
     public Set<TableCapability> capabilities() {
         log.debug("Reporting table capabilities: BATCH_READ");

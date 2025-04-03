@@ -27,6 +27,11 @@ public class XLSXScanBuilder implements ScanBuilder {
         this.options = options;
     }
 
+    /**
+     * Builds a scan for reading the XLSX file.
+     *
+     * @return A new scan
+     */
     @Override
     public Scan build() {
         log.debug("Building XLSX scan");

@@ -27,12 +27,22 @@ public class XLSXScan implements Scan {
         this.options = options;
     }
 
+    /**
+     * Gets the schema used for reading the XLSX file.
+     *
+     * @return The read schema
+     */
     @Override
     public StructType readSchema() {
         log.debug("Returning read schema: {}", schema);
         return schema;
     }
 
+    /**
+     * Converts this scan to a batch operation.
+     *
+     * @return A new batch
+     */
     @Override
     public Batch toBatch() {
         log.debug("Converting scan to batch");
