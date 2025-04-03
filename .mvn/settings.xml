@@ -21,7 +21,8 @@
       <activeByDefault>true</activeByDefault>
     </activation>
     <properties>
-      <gpg.keyname>${env.MAVEN_GPG_PRIVATE_KEY}</gpg.keyname>
+      <gpg.keyname>${env.MAVEN_GPG_KEY_ID}</gpg.keyname>
+      <gpg.passphrase>${env.MAVEN_GPG_PASSPHRASE}</gpg.passphrase>
     </properties>
   </profile>
 </profiles>
