@@ -51,6 +51,9 @@ jobs:
       - name: Update to release version
         run: mvn --settings .mvn/settings.xml versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }}
 
+      - name: Verify Maven settings
+        run: cat .mvn/settings.xml
+
       - name: Build and deploy to Maven Central
         run: |
           # Check if sparkVersion is provided
