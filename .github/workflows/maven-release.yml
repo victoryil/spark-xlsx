@@ -9,13 +9,19 @@ on:
       developmentVersion:
         description: 'Next development version (with -SNAPSHOT suffix)'
         required: true
+      profile:
+        description: 'Maven profile (e.g., scala-2.12, scala-2.13)'
+        required: true
+      sparkVersion:
+        description: 'Optional: Spark version to override the profile value'
+        required: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     env:
       MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD}}
+      MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       MAVEN_GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       MAVEN_GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
@@ -46,7 +52,14 @@ jobs:
         run: mvn --settings .mvn/settings.xml versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }}
 
       - name: Build and deploy to Maven Central
-        run: mvn --settings .mvn/settings.xml clean deploy -P release -DskipTests
+        run: |
+          # Check if sparkVersion is provided
+          if [[ -n "${{ github.event.inputs.sparkVersion }}" ]]; then
+            mvn --settings .mvn/settings.xml clean deploy -P${{ github.event.inputs.profile }} \
+              -DskipTests -Dspark.version=${{ github.event.inputs.sparkVersion }}
+          else
+            mvn --settings .mvn/settings.xml clean deploy -P${{ github.event.inputs.profile }} -DskipTests
+          fi
 
       - name: Create Git tag
         run: |
