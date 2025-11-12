@@ -51,8 +51,17 @@ jobs:
       - name: Update to release version
         run: mvn --settings .mvn/settings.xml versions:set -DnewVersion=${{ github.event.inputs.releaseVersion }}
 
-      - name: Verify Maven settings
-        run: cat .mvn/settings.xml
+      - name: Validate Environment Variables
+        run: |
+          echo "Validating environment variables..."
+          for var in MAVEN_USERNAME MAVEN_PASSWORD GPG_KEY_ID GPG_PASSPHRASE GPG_PRIVATE_KEY; do
+            if [ -z "${!var}" ]; then
+              echo "Error: $var is not set."
+              exit 1
+            else
+              echo "$var is set."
+            fi
+          done
 
       - name: Build and deploy to Maven Central
         run: |
